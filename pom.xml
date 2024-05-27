@@ -19,9 +19,9 @@
     </organization>
 
     <scm>
-        <url>https://github.com/CourseOrchestra/xylophone.git</url>
-        <connection>scm:git:git://github.com/CourseOrchestra/xylophone.git</connection>
-        <developerConnection>scm:git:git://github.com/CourseOrchestra/xylophone.git</developerConnection>
+        <url>https://github.com/masulum/xylophone.git</url>
+        <connection>scm:git:git://github.com/masulum/xylophone.git</connection>
+        <developerConnection>scm:git:git://github.com/masulum/xylophone.git</developerConnection>
     </scm>
 
     <licenses>
