@@ -43,6 +43,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Footer;
 import org.apache.poi.ss.usermodel.Header;
 import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.PageMargin;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -95,7 +96,7 @@ abstract class POIReportWriter extends ReportWriter {
         } catch (InvalidFormatException | IOException e) {
             throw new XML2SpreadSheetError(e.getMessage());
         }
-        final Map<Short, Font> fontMap = new HashMap<>();
+        final Map<Integer, Font> fontMap = new HashMap<>();
 
         // Копируем шрифты
         // Внимание: в цикле --- <=, а не < из-за ошибки то ли в названии,
@@ -133,16 +134,16 @@ abstract class POIReportWriter extends ReportWriter {
             CellStyle csSource = this.template.getCellStyleAt(i);
             CellStyle csResult = result.createCellStyle();
 
-            csResult.setAlignment(csSource.getAlignmentEnum());
-            csResult.setBorderBottom(csSource.getBorderBottomEnum());
-            csResult.setBorderLeft(csSource.getBorderLeftEnum());
-            csResult.setBorderRight(csSource.getBorderRightEnum());
-            csResult.setBorderTop(csSource.getBorderTopEnum());
+            csResult.setAlignment(csSource.getAlignment());
+            csResult.setBorderBottom(csSource.getBorderBottom());
+            csResult.setBorderLeft(csSource.getBorderLeft());
+            csResult.setBorderRight(csSource.getBorderRight());
+            csResult.setBorderTop(csSource.getBorderTop());
             csResult.setBottomBorderColor(csSource.getBottomBorderColor());
             csResult.setDataFormat(df.getFormat(csSource.getDataFormatString()));
             csResult.setFillBackgroundColor(csSource.getFillBackgroundColor());
             csResult.setFillForegroundColor(csSource.getFillForegroundColor());
-            csResult.setFillPattern(csSource.getFillPatternEnum());
+            csResult.setFillPattern(csSource.getFillPattern());
             Font f = fontMap.get(csSource.getFontIndex());
             if (f != null) {
                 csResult.setFont(f);
@@ -155,7 +156,7 @@ abstract class POIReportWriter extends ReportWriter {
             csResult.setRightBorderColor(csSource.getRightBorderColor());
             csResult.setRotation(csSource.getRotation());
             csResult.setTopBorderColor(csSource.getTopBorderColor());
-            csResult.setVerticalAlignment(csSource.getVerticalAlignmentEnum());
+            csResult.setVerticalAlignment(csSource.getVerticalAlignment());
             csResult.setWrapText(csSource.getWrapText());
 
             stylesMap.put(csSource, csResult);
@@ -247,7 +248,8 @@ abstract class POIReportWriter extends ReportWriter {
 
         activeResultSheet.setFitToPage(activeTemplateSheet.getFitToPage());
         for (short i = 0; i < 4; i++) {
-            activeResultSheet.setMargin(i, activeTemplateSheet.getMargin(i));
+            PageMargin pm = PageMargin.getByShortValue(i);
+            activeResultSheet.setMargin(pm, activeTemplateSheet.getMargin(pm));
         }
         activeResultSheet.setDisplayZeros(activeTemplateSheet.isDisplayZeros());
 
@@ -323,7 +325,7 @@ abstract class POIReportWriter extends ReportWriter {
                 // Копируем значение...
                 String val;
                 String buf;
-                switch (sourceCell.getCellTypeEnum()) {
+                switch (sourceCell.getCellType()) {
                     case BOOLEAN:
                         resultCell.setCellValue(sourceCell.getBooleanCellValue());
                         break;
@@ -457,7 +459,7 @@ abstract class POIReportWriter extends ReportWriter {
             if (cell == null) {
                 return false;
             }
-            switch (cell.getCellTypeEnum()) {
+            switch (cell.getCellType()) {
                 case STRING:
                     return cell.getStringCellValue().equalsIgnoreCase(cellWithStyle.getValue());
                 case BOOLEAN:

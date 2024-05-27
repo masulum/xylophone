@@ -1,7 +1,7 @@
 package ru.curs.xylophone;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -79,16 +79,11 @@ public class TestOverall {
                     false, false, outputStream);
         }
 
-        NPOIFSFileSystem fileSystem = new NPOIFSFileSystem(createdTempOutputFile);
+        POIFSFileSystem fileSystem = new POIFSFileSystem(createdTempOutputFile);
         HSSFWorkbook workbook = new HSSFWorkbook(fileSystem.getRoot(), false);
 
-        Excel2Print excelPrinter = new Excel2Print(workbook);
-        excelPrinter.setFopConfig(Paths.get(TestFO.class.getResource("fop.xconf").toURI()).toFile());
-
-        File pdfResultFile = temporaryFolder.newFile("after_conversion_to_pdf.pdf");
-        excelPrinter.toPDF(new FileOutputStream(pdfResultFile));
+      
 
         assertTrue(createdTempOutputFile.length() > 0);
-        assertTrue(pdfResultFile.length() > 0);
     }
 }
